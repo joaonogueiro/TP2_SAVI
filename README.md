@@ -8,6 +8,9 @@ UPDATE:
  é aplicar feature matching e comparar a imagem atual com a imagem modelo da class e verificar a accuracy/confidence, se for acima de 0,85 (suponhamos), pertence à classe, se for abaixo, continua a iterar pelas imagens modelo das classes. 
 
  a pasta "teach_dataset" deve estar dentro da pasta "rgbd-dataset" sendo que esta está no mesmo local do script a executar, isto eventualmente pode alterar, mas para já, está assim.
+
+# Objetivos
+
 ### Objetivo 1 - Treino de um classificador em deep learning
 
 Pretende-se que o sistema desenvolvido seja capaz de detetar objetos na cena (em dados do RGB-D Scenes Dataset) e depois calcule várias propriedades dos objetos.
