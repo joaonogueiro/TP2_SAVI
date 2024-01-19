@@ -13,14 +13,15 @@ UPDATE:
 
   | Percentagem  | Objetivo |Tarefa|
 | ------------- | ------------- |---------|
-  |15%| Objetivo 1|Treino de um classificador em deep learning|
+  |15%| Objetivo 1|Treino de um classificador|
   |15%| Objetivo 2|Pré-processamento 3D|
   |15%| Objetivo 3|Classificação objetos na cena|
   |10%| Objetivo 4|Descrição audio|
-  |5% | Objetivo 5|Métricas de performance|
-  |10%| Objetivo 6|Apeto geral do software|
-  |5% | Objetivo 7|Extras|
-  |10%| Objetivo 8|Código e Github|
+  |15%| Objetivo 5|Métricas de performance|
+  |5% | Objetivo 6|Sistema em tempo real|
+  |10%| Objetivo 7|Aspeto geral do software|
+  |5% | Objetivo 8|Extras|
+  |10%| Objetivo 9|Código e Github|
   
 # Objetivos
 
