@@ -8,7 +8,20 @@ UPDATE:
  é aplicar feature matching e comparar a imagem atual com a imagem modelo da class e verificar a accuracy/confidence, se for acima de 0,85 (suponhamos), pertence à classe, se for abaixo, continua a iterar pelas imagens modelo das classes. 
 
  a pasta "teach_dataset" deve estar dentro da pasta "rgbd-dataset" sendo que esta está no mesmo local do script a executar, isto eventualmente pode alterar, mas para já, está assim.
+ 
+ # Tópicos e percentagens para avaliação
 
+  | Percentagem  | Objetivo |Tarefa|
+| ------------- | ------------- |---------|
+  |15%| Objetivo 1|Treino de um classificador em deep learning|
+  |15%| Objetivo 2|Pré-processamento 3D|
+  |15%| Objetivo 3|Classificação objetos na cena|
+  |10%| Objetivo 4|Descrição audio|
+  |5% | Objetivo 5|Métricas de performance|
+  |10%| Objetivo 6|Apeto geral do software|
+  |5% | Objetivo 7|Extras|
+  |10%| Objetivo 8|Código e Github|
+  
 # Objetivos
 
 ### Objetivo 1 - Treino de um classificador em deep learning
