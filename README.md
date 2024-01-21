@@ -58,3 +58,17 @@ Em particular, para os detetores de objetos devem ser apresentadas métricas de 
 ### Objetivo 6 - Sistema em tempo real
 
 Utilizando uma câmara RGB-D em frente a uma mesa, experimente o sistema a correr em tempo real.
+
+# Desenvolvimento
+
+## treino de um classificador
+
+## pré processamento
+### ler a nuvem de pontos:
+usar a funçao "o3d.io.read_point_cloud()" para ler a nuvem de pontos
+
+diminuição da resolução "downsampling"
+### remover o chão:
+
+-> encontrar a mesa:
+   

@@ -6,6 +6,7 @@ from copy import deepcopy
 import math
 import open3d as o3d
 import numpy as np
+import sys
 from matplotlib import cm
 from more_itertools import locate
 
@@ -43,13 +44,14 @@ class PlaneDetection():
         plane_model, inlier_idxs = self.point_cloud.segment_plane(distance_threshold=distance_threshold, 
                                                     ransac_n=ransac_n,
                                                     num_iterations=num_iterations)
+        
         [self.a, self.b, self.c, self.d] = plane_model
-
         self.inlier_cloud = self.point_cloud.select_by_index(inlier_idxs)
 
         outlier_cloud = self.point_cloud.select_by_index(inlier_idxs, invert=True)
-
-        return outlier_cloud
+        inlier_cloud  = self.point_cloud.select_by_index(inlier_idxs, invert=False)
+        
+        return (outlier_cloud,inlier_cloud)
 
     def __str__(self):
         text = 'Segmented plane from pc with ' + str(len(self.point_cloud.points)) + ' with ' + str(len(self.inlier_cloud.points)) + ' inliers. '
@@ -62,9 +64,7 @@ def main():
     # --------------------------------------
     # Initialization
     # --------------------------------------
-    #/home/joao/Documents/SAVI/Repositório/Aula1_SAVI_mine/TP2_ideas/rgbd-scenes-v2_pc/rgbd-scenes-v2
-    #/home/joao/Documents/SAVI/Repositório/Aula1_SAVI_mine/TP2_ideas/rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/01.ply
-    filename = '../rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/10.ply'
+    filename = '../rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/01.ply'
     print('Loading file ' + filename)
     pcd_original = o3d.io.read_point_cloud(filename)
     print(pcd_original)
@@ -77,7 +77,7 @@ def main():
     # Aply Downsampling
     #    
     pcd_downsampled = pcd_original.voxel_down_sample(voxel_size=0.02)
-    #pcd_downsampled.paint_uniform_color([1,0,0])#pintar a malha com uma cor
+    pcd_downsampled.paint_uniform_color([0,0,1])#pintar a malha com uma cor
     # estimate normals
     pcd_downsampled.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
     pcd_downsampled.orient_normals_to_align_with_direction(orientation_reference=np.array([0, 0, 1]))
@@ -87,11 +87,12 @@ def main():
     #
     pcd_point_cloud = deepcopy(pcd_downsampled)
     planes=[]
-    max_planes=3
+    max_planes=1
     plane_min_points=25
     while True:
         plane=PlaneDetection(pcd_point_cloud)
-        pcd_point_cloud = plane.segment(distance_threshold=0.035, ransac_n=3, num_iterations=200) 
+        [pcd_point_cloud,pcd_inlier_cloud] = plane.segment(distance_threshold=0.035, ransac_n=3, num_iterations=200) 
+        pcd_inlier_cloud.paint_uniform_color((1, 0, 0))
         print(plane)
         planes.append(plane)
         if len(planes) >= max_planes: # stop detection planes
@@ -101,25 +102,69 @@ def main():
             print('number of remaining points <' + str(plane_min_points))
             break
     
-    #or plane_idx,plane in enumerate(planes):
-    #    center=plane.inlier_cloud.get_center()
 
+    table_plane_mean_xy = 10000
+    centers=[]
+    for plane_idx,plane in enumerate(planes):
+        center=plane.inlier_cloud.get_center()
+        centers.append(center)
+        print('Cloud ' + str(plane_idx) + ' has center '+str(center))
+        mean_x = center[0]
+        mean_y = center[1]
+        mean_z = center[2]
 
+        mean_xy = abs(mean_x) + abs(mean_y)
+        if mean_xy < table_plane_mean_xy:
+            table_plane = plane
+            table_plane_mean_xy = mean_xy
 
+    #
+    # draw the reference of the found plans
+    #
+    frame_1 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=0.5, origin=np.array([centers[0][0],centers[0][1],centers[0][2]]))
+    #frame_2 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=0.5, origin=np.array([centers[1][0],centers[1][1],centers[1][2]]))
 
-    #criar o referecial em [0 0 0]
-    frame = o3d.geometry.TriangleMesh().create_coordinate_frame(size=0.5, origin=np.array([0., 0., 0.]))
-    
+    #
+    # Clustering aply to the big point clouds
+    # 
+    labels = pcd_point_cloud.cluster_dbscan(eps=0.08, min_points=15, print_progress=True)
+    print("Max label:", max(labels))
+    group_idxs = list(set(labels))
+    print('groud_idx:',group_idxs)
+    num_groups = len(group_idxs)
+    colormap = cm.Pastel1(range(0, num_groups))
+
+    center_clouds=[]
+    pcd_sep_objects = []
+    for group_idx in group_idxs:  # Cycle all groups, i.e.,
+        group_points_idxs = list(locate(labels, lambda x: x == group_idx))
+        pcd_separate_object = pcd_point_cloud.select_by_index(group_points_idxs, invert=True)
+        color = colormap[group_idx, 0:3]
+        pcd_separate_object.paint_uniform_color(color)
+        pcd_sep_objects.append(pcd_separate_object)
+        
+        tamanho = sys.getsizeof(pcd_separate_object)
+        print(f'O tamanho da variável é: {tamanho} bytes')
+        print(pcd_separate_object)
+        center=pcd_separate_object.get_center()
+        center_clouds.append(center)
+        print(centers)
+        
 
     #------------------------------------------------------------------
     # Visualization 
     #------------------------------------------------------------------
     
-    #pcds_to_draw = [pcd_downsampled]
-    pcds_to_draw = [pcd_point_cloud]
-   
+    
+    pcds_to_draw = [pcd_sep_objects[0],pcd_sep_objects[1],pcd_sep_objects[2],pcd_sep_objects[3],
+                    pcd_sep_objects[4],pcd_sep_objects[5],pcd_sep_objects[6],pcd_sep_objects[7],
+                    pcd_sep_objects[8],pcd_sep_objects[9],pcd_sep_objects[10],pcd_sep_objects[11],
+                    pcd_sep_objects[12],pcd_sep_objects[13],pcd_sep_objects[14],pcd_sep_objects[15]]
+    #pcds_to_draw= [pcd_point_cloud]
+
     entities = []
-    entities.append(frame)
+    entities.append(frame_1)
+    entities.append(pcd_inlier_cloud)
     entities.extend(pcds_to_draw)
     
     o3d.visualization.draw_geometries(entities,
