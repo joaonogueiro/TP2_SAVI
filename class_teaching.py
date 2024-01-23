@@ -35,7 +35,8 @@ def main():
     # --------------------------------------
 
     # get the dataset images to teach the program
-    dataset_dir = 'rgbd-dataset/teach_dataset'
+    # dataset_dir = 'rgbd-dataset/teach_dataset'
+    dataset_dir = '../rgbd-dataset_1/teach_dataset' #Teste Joao Nog
 
     if not os.path.exists(dataset_dir):
         os.makedirs(dataset_dir)
@@ -71,7 +72,6 @@ def main():
         img_rgb = cv2.cvtColor(img_gui, cv2.COLOR_BGR2RGB)
 
 
-
         # --------------------------------------
         # Visualization
         # --------------------------------------
@@ -87,8 +87,7 @@ def main():
 
         elif k == ord('q'):
             break
-
-    
+   
 
     print(classes)
 
@@ -105,14 +104,7 @@ def main():
     # --------------------------------------
     # Termination
     # --------------------------------------
-
-        
     cv2.destroyAllWindows()
-
-
-
-    
-
 
 if __name__ == "__main__":
     main()

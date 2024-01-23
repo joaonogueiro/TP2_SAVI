@@ -46,7 +46,9 @@ def main():
 
     # ------------------- Load the images -------------------
     # get the dataset images to teach the program
-    dataset_dir = 'rgbd-dataset/teach_dataset'
+    # dataset_dir = 'rgbd-dataset/teach_dataset'
+    dataset_dir = '../rgbd-dataset_1/teach_dataset' #Teste Joao Nog
+
 
     if not os.path.exists(dataset_dir):
         os.makedirs(dataset_dir)
