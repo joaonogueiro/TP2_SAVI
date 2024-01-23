@@ -121,7 +121,7 @@ def main():
     #
     # draw the reference of the found plans
     #
-    frame_1 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=0.5, origin=np.array([centers[0][0],centers[0][1],centers[0][2]]))
+    frame_1 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=2, origin=np.array([centers[0][0],centers[0][1],centers[0][2]]))
     #frame_2 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=0.5, origin=np.array([centers[1][0],centers[1][1],centers[1][2]]))
 
     #
@@ -135,35 +135,43 @@ def main():
     colormap = cm.Pastel1(range(0, num_groups))
 
     center_clouds=[]
+    norms_vetor_center=[]
     pcd_sep_objects = []
+    a=10
     for group_idx in group_idxs:  # Cycle all groups, i.e.,
         group_points_idxs = list(locate(labels, lambda x: x == group_idx))
-        pcd_separate_object = pcd_point_cloud.select_by_index(group_points_idxs, invert=True)
+        pcd_separate_object = pcd_point_cloud.select_by_index(group_points_idxs, invert=False)
         color = colormap[group_idx, 0:3]
         pcd_separate_object.paint_uniform_color(color)
         pcd_sep_objects.append(pcd_separate_object)
         
-        tamanho = sys.getsizeof(pcd_separate_object)
-        print(f'O tamanho da variável é: {tamanho} bytes')
-        print(pcd_separate_object)
+        #print(pcd_separate_object)
+        print('The point cloud nº ',group_idx,' is centered at',center)
         center=pcd_separate_object.get_center()
-        center_clouds.append(center)
-        print(centers)
+        center_clouds.extend(center)
+        quadratic= ((center[0]-mean_x)**2)+((center[1]-mean_y)**2)+((center[2]-mean_z)**2) 
+        norm=math.sqrt(quadratic)
+        print('the norm value',norm)
         
+        frame_2 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=2, origin=np.array([center[0],center[1],center[2]]))
+        if norm<a:
+            id_table=group_idx
+            a=norm
+    print('The point cloud closest to the center is:',id_table)
+            
+            
 
     #------------------------------------------------------------------
     # Visualization 
     #------------------------------------------------------------------
     
     
-    pcds_to_draw = [pcd_sep_objects[0],pcd_sep_objects[1],pcd_sep_objects[2],pcd_sep_objects[3],
-                    pcd_sep_objects[4],pcd_sep_objects[5],pcd_sep_objects[6],pcd_sep_objects[7],
-                    pcd_sep_objects[8],pcd_sep_objects[9],pcd_sep_objects[10],pcd_sep_objects[11],
-                    pcd_sep_objects[12],pcd_sep_objects[13],pcd_sep_objects[14],pcd_sep_objects[15]]
+    pcds_to_draw = [pcd_sep_objects[id_table]]
     #pcds_to_draw= [pcd_point_cloud]
 
     entities = []
     entities.append(frame_1)
+    entities.append(frame_2)
     entities.append(pcd_inlier_cloud)
     entities.extend(pcds_to_draw)
     
