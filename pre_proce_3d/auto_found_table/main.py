@@ -29,6 +29,25 @@ view = {
 	"version_major" : 1,
 	"version_minor" : 0
 }
+view ={
+	"class_name" : "ViewTrajectory",
+	"interval" : 29,
+	"is_loop" : False,
+	"trajectory" : 
+	[
+		{
+			"boundingbox_max" : [ 1.9683605082759705, 2.2945976147068516, 3.370884714565995 ],
+			"boundingbox_min" : [ -0.75785553455352783, -0.41206100583076477, 0.66313779354095459 ],
+			"field_of_view" : 60.0,
+			"front" : [ -0.015448455963391188, -0.16309258800763526, -0.98648981390854662 ],
+			"lookat" : [ -0.46578398172068008, -0.92612540346671368, -4.0018827391001999 ],
+			"up" : [ 0.17329945341612599, -0.97211251411034749, 0.15800177010315938 ],
+			"zoom" : 0.02
+		}
+	],
+	"version_major" : 1,
+	"version_minor" : 0
+}
 
 class PlaneDetection():
     def __init__(self, point_cloud):
@@ -64,7 +83,9 @@ def main():
     # --------------------------------------
     # Initialization
     # --------------------------------------
-    filename = '../rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/01.ply'
+    filename = '../rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/14.ply'
+    #05 06 07 08 gives me problems,table legs separate from the table
+    # 13 14 gives me probles, 
     print('Loading file ' + filename)
     pcd_original = o3d.io.read_point_cloud(filename)
     print(pcd_original)
@@ -83,15 +104,15 @@ def main():
     pcd_downsampled.orient_normals_to_align_with_direction(orientation_reference=np.array([0, 0, 1]))
     
     #
-    # find all plans
+    # find all plans, plane segmentation 
     #
     pcd_point_cloud = deepcopy(pcd_downsampled)
     planes=[]
     max_planes=1
-    plane_min_points=25
+    plane_min_points=100 #25 as a good value
     while True:
         plane=PlaneDetection(pcd_point_cloud)
-        [pcd_point_cloud,pcd_inlier_cloud] = plane.segment(distance_threshold=0.035, ransac_n=3, num_iterations=200) 
+        [pcd_point_cloud,pcd_inlier_cloud] = plane.segment(distance_threshold=0.035, ransac_n=3, num_iterations=400) #num off iterations 200
         pcd_inlier_cloud.paint_uniform_color((1, 0, 0))
         print(plane)
         planes.append(plane)
@@ -119,8 +140,9 @@ def main():
             table_plane_mean_xy = mean_xy
 
     #
-    # draw the reference of the found plans
+    # create the reference of the found plans
     #
+            
     frame_1 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=2, origin=np.array([centers[0][0],centers[0][1],centers[0][2]]))
     #frame_2 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=0.5, origin=np.array([centers[1][0],centers[1][1],centers[1][2]]))
 
@@ -137,7 +159,7 @@ def main():
     center_clouds=[]
     norms_vetor_center=[]
     pcd_sep_objects = []
-    a=10
+    a=1000
     for group_idx in group_idxs:  # Cycle all groups, i.e.,
         group_points_idxs = list(locate(labels, lambda x: x == group_idx))
         pcd_separate_object = pcd_point_cloud.select_by_index(group_points_idxs, invert=False)
@@ -154,25 +176,49 @@ def main():
         print('the norm value',norm)
         
         frame_2 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=2, origin=np.array([center[0],center[1],center[2]]))
-        if norm<a:
+        if norm<a and group_idx!=-1:
             id_table=group_idx
             a=norm
     print('The point cloud closest to the center is:',id_table)
-            
-            
+
+    #
+    # plane segmentation, for remove the table surface
+    #
+    pcd_table_id=pcd_sep_objects[id_table]
+    plane_2=PlaneDetection(pcd_table_id)
+    [pcd_point_cloud_2,pcd_inlier_cloud_2]=plane_2.segment(distance_threshold=0.02, ransac_n=3, num_iterations=400)
+    pcd_point_cloud_2.paint_uniform_color((0, 0, 1)) # point cloud on the surface
+    pcd_inlier_cloud_2.paint_uniform_color((0, 1, 0)) #table surface
+    
+    #
+    # Clustering applied to the point cloud on the table surface
+    #
+    labels_2 = pcd_point_cloud_2.cluster_dbscan(eps=0.04, min_points=30, print_progress=True)
+    print("Max label:", max(labels_2))
+    group_idxs_2 = list(set(labels_2))
+    print('groud_idx:',group_idxs_2)
+    num_groups_2 = len(group_idxs_2)
+    
+    pcd_sep_objects_2=[]
+    for group_idx_2 in group_idxs_2:
+        group_points_idxs_2 = list(locate(labels_2, lambda x: x == group_idx_2))
+        pcd_sep_object_2=pcd_point_cloud_2.select_by_index(group_points_idxs_2,invert=False)
+        pcd_sep_object_2.paint_uniform_color(color)
+        pcd_sep_objects_2.append(pcd_sep_object_2)
 
     #------------------------------------------------------------------
     # Visualization 
     #------------------------------------------------------------------
     
     
-    pcds_to_draw = [pcd_sep_objects[id_table]]
+    #pcds_to_draw = [pcd_point_cloud_2,pcd_inlier_cloud_2]
+    pcds_to_draw = [pcd_inlier_cloud_2,pcd_sep_objects_2[0],pcd_sep_objects_2[1],pcd_sep_objects_2[2],pcd_sep_objects_2[3]]
     #pcds_to_draw= [pcd_point_cloud]
 
     entities = []
     entities.append(frame_1)
-    entities.append(frame_2)
-    entities.append(pcd_inlier_cloud)
+    #entities.append(frame_2)
+    #entities.append(pcd_inlier_cloud)
     entities.extend(pcds_to_draw)
     
     o3d.visualization.draw_geometries(entities,
