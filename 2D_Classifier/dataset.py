@@ -19,10 +19,10 @@ class Dataset(torch.utils.data.Dataset):
         self.number_of_images = len(self.filenames)
         # self.labels_list = labels_list
 
-        # Reading labels_names from json file
-        with open('../Train/dataset_filenames.json', 'r') as f:
+        # Load labels_names from json file
+        with open('../2D_Classifier/categories.json', 'r') as f:
             dataset_filenames = json.load(f)
-        self.labels_list = dataset_filenames['labels_names']
+        self.labels_dict = dataset_filenames
 
         # Compute the corresponding labels
         self.labels = [] 
@@ -35,26 +35,13 @@ class Dataset(torch.utils.data.Dataset):
             else:
                 label = blocks[0] + '_' + blocks[1]
            
-            # labels_list -> ['instant_noodles', 'camera', 'sponge', 'lemon', 'stapler', 'cereal_box', 'cap', 'greens', 'orange', ..
-            # 'potato', 'glue_stick', 'bowl', 'water_bottle', 'garlic', 'binder', 'pitcher', 'bell_pepper', 'tomato', 'onion', 'food_cup', 
-            # 'keyboard', 'calculator', 'soda_can', 'comb', 'food_bag', 'coffee_mug', 'pliers', 'kleenex', 'lightbulb', 'toothbrush', 'plate', 
-            # 'banana', 'toothpaste', 'scissors', 'notebook', 'peach', 'dry_battery', 'rubber_eraser', 'marker', 'pear', 'shampoo', 'food_jar', 
-            # 'lime', 'cell_phone', 'hand_towel', 'mushroom', 'ball', 'food_box', 'apple', 'flashlight', 'food_can']
-
-        # Pytorch does not accept strings as labels, numeric indexes will be given to each category
-            if label in self.labels_list:
-                idx_label = self.labels_list.index(label)
+            # Pytorch does not accept strings as labels, numeric indexes will be given to each category
+            if label in self.labels_dict:
+                idx_label = self.labels_dict[label]
                 self.labels.append(idx_label)
             else:
                 raise ValueError('Unknown label ' + label)
                
-        # Debug
-        # print(self.filenames[0:3])
-        # print(self.labels[0:3]) 
-        # Example:
-        # filenames ['../../rgbd-dataset/water_bottle/water_bottle_10/water_bottle_10_2_27_crop.png', '../../rgbd-dataset/sponge/sponge_6/sponge_6_4_50_crop.png', '../../rgbd-dataset/soda_can/soda_can_1/soda_can_1_1_117_crop.png']
-        # labels [12, 2, 22]
-
         # Create a set of transformations
         # Transformations, can be advantageous when there are few training images
         self.transforms = transforms.Compose([

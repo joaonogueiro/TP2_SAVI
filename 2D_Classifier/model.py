@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 
 
-import os
-import torch
 import torch.nn as nn
-from torchvision import transforms
-from PIL import Image
 
 
 class Model(nn.Module):
@@ -38,9 +34,9 @@ class Model(nn.Module):
             nn.MaxPool2d(2)
         )
 
-        self.fc1 = nn.Linear(3*3*64, 10)
+        self.fc1 = nn.Linear(3*3*64, 25)
         self.dropout = nn.Dropout(0.5)
-        self.fc2 = nn.Linear(10, 51) #Only change the second parameter, because in our case we have a 51 possibilities
+        self.fc2 = nn.Linear(25, 51)
         self.relu = nn.ReLU()
 
     def forward(self, x):
