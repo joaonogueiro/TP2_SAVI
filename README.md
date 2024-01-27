@@ -29,6 +29,7 @@ and some more
 Fazes um vídeo de demonstração rápida do programa.
 
 
+## Updates aos scripts
 UPDATE:
  - ficheiro class_teaching.py lê as imagens da pasta "teach_dataset", obtém o nome da classe de cada imagem e guarda as classes num array.
  - ficheiro obect_classifier.py lê as imagens que tiver que ler, faz um retângulo à volta do objeto de modo a identificar o objeto, após isto
