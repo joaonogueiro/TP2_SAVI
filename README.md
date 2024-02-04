@@ -1,13 +1,44 @@
 # TP2_SAVI
 Trabalho elaborado no âmbito da unidade curricular de Sistemas Avançados de Visão Industrial da Universidade de Aveiro.
 
+Pratical Work 2  - SAVI - Where's my coffee mug? <br>
+SAVI - 2023/2024 Universidade de Aveiro
+<br>
+<br>
+## Contribuidores: 
+### Grupo JJJ
+- João Figueiredo (116189) vie.fig@ua.pt
+- João Nogueiro (111807) joao.nogueiro@ua.pt
+- Nuno Cunha (95167) nunocunha99@ua.pt
+ <br>
 
+
+ ## Instalação
+Dependências de pacotes:
+- `pip install opencv-python`
+- `pip install open3d`
+- `pip install gtts`
+and some more
+<br>
+
+## Guia de utilizador
+<br>
+
+
+## Demonstração
+Fazes um vídeo de demonstração rápida do programa.
+
+
+## Updates aos scripts
 UPDATE:
  - ficheiro class_teaching.py lê as imagens da pasta "teach_dataset", obtém o nome da classe de cada imagem e guarda as classes num array.
  - ficheiro obect_classifier.py lê as imagens que tiver que ler, faz um retângulo à volta do objeto de modo a identificar o objeto, após isto
  é aplicar feature matching e comparar a imagem atual com a imagem modelo da class e verificar a accuracy/confidence, se for acima de 0,85 (suponhamos), pertence à classe, se for abaixo, continua a iterar pelas imagens modelo das classes. 
 
  a pasta "teach_dataset" deve estar dentro da pasta "rgbd-dataset" sendo que esta está no mesmo local do script a executar, isto eventualmente pode alterar, mas para já, está assim.
+
+  - README atualizado, no entanto, convém verificar se há ou haverão mais librarias a adicionar para o stor instalar ao testar o sistema
+
  
  # Tópicos e percentagens para avaliação
 
