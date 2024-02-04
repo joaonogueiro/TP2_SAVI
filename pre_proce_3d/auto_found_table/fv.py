@@ -83,7 +83,9 @@ def main():
     # --------------------------------------
     # Initialization
     # --------------------------------------
+    
     filename = '../rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/01.ply'
+   
     #05 06 07 08 gives me problems,table legs separate from the table
     # 13 14 gives me probles, 
     print('Loading file ' + filename)
@@ -98,7 +100,7 @@ def main():
     # Aply Downsampling
     #    
     pcd_downsampled = pcd_original.voxel_down_sample(voxel_size=0.02)
-    pcd_downsampled.paint_uniform_color([0,0,1])#pintar a malha com uma cor
+    #pcd_downsampled.paint_uniform_color([0,0,1])#pintar a malha com uma cor
     # estimate normals
     pcd_downsampled.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
     pcd_downsampled.orient_normals_to_align_with_direction(orientation_reference=np.array([0, 0, 1]))
@@ -145,7 +147,8 @@ def main():
             
     frame_1 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=2, origin=np.array([centers[0][0],centers[0][1],centers[0][2]]))
     #frame_2 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=0.5, origin=np.array([centers[1][0],centers[1][1],centers[1][2]]))
-
+    frame_main = o3d.geometry.TriangleMesh().create_coordinate_frame(size=2, origin=np.array([0,0,0]))
+    
     #
     # Clustering aply to the big point clouds
     # 
@@ -188,7 +191,7 @@ def main():
     plane_2=PlaneDetection(pcd_table_id)
     [pcd_point_cloud_2,pcd_inlier_cloud_2]=plane_2.segment(distance_threshold=0.02, ransac_n=3, num_iterations=400)
     pcd_point_cloud_2.paint_uniform_color((0, 0, 1)) # point cloud on the surface
-    pcd_inlier_cloud_2.paint_uniform_color((0, 1, 0)) #table surface
+    pcd_inlier_cloud_2.paint_uniform_color((0, 0, 0)) #table surface
     
     #
     # Clustering applied to the point cloud on the table surface
@@ -206,23 +209,20 @@ def main():
         pcd_sep_object_2.paint_uniform_color(color)
         pcd_sep_objects_2.append(pcd_sep_object_2)
 
-    #
-    # draw a Bounding box for all the found objects  
-    #    
-
-
     #------------------------------------------------------------------
     # Visualization 
     #------------------------------------------------------------------
     
     
     #pcds_to_draw = [pcd_point_cloud_2,pcd_inlier_cloud_2]
-    pcds_to_draw = [pcd_inlier_cloud_2,pcd_sep_objects_2[0],pcd_sep_objects_2[1],pcd_sep_objects_2[2],pcd_sep_objects_2[3]]
+    #pcds_to_draw = [pcd_inlier_cloud_2,pcd_sep_objects_2[0],pcd_sep_objects_2[1],pcd_sep_objects_2[2],pcd_sep_objects_2[3]]
     #pcds_to_draw= [pcd_point_cloud]
-    #pcds_to_draw = [pcd_downsampled]
+    pcds_to_draw= [pcd_downsampled,pcd_inlier_cloud_2]
     
+    
+
     entities = []
-    entities.append(frame_1)
+    entities.append(frame_main)
     #entities.append(frame_2)
     #entities.append(pcd_inlier_cloud)
     entities.extend(pcds_to_draw)
