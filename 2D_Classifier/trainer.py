@@ -31,7 +31,7 @@ class Trainer():
 
         # Setup matplotlib figure
         plt.title('Train Loss', fontweight="bold")
-        plt.axis([0, self.num_epoch, 0, 5])
+        plt.axis([0, self.num_epoch, 0, 0.7])
         plt.xlabel('Epoch')
         plt.ylabel('Loss')
         # plt.hlines(y=self.loss_threshold, xmin=0, xmax=self.num_epoch, colors='red', linestyles='-', lw=2, label='Threshold Loss')

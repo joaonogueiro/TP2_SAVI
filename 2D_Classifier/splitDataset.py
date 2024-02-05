@@ -24,40 +24,56 @@ def categoriesNames(dataset_path):
        
 def main():
 
-    dataset_path = '../../rgbd-dataset' 
-    image_filenames = glob.glob(dataset_path + '/*/*/*_crop.png')
+    #######################################################################################
+    # All categories
+    #######################################################################################
+    # dataset_folders = '../../rgbd-dataset' 
+    # image_filenames = glob.glob(dataset_folders + '/*/*/*_crop.png')
 
-    # Check if dataset data exists
-    if len(image_filenames) < 1:
-        raise FileNotFoundError('Dataset files not found')
+    # # Check if dataset data exists
+    # if len(image_filenames) < 1:
+    #     raise FileNotFoundError('Dataset files not found')
     
-    # Speed up
-    image_filenames = random.sample(image_filenames, k=2000)
-    
-    
-    # Splitting the dataset
-    # train_filenames, remaining_filenames = train_test_split(image_filenames, test_size=0.3)
-    # validation_filenames, test_filenames = train_test_split(remaining_filenames, test_size=0.33)
-
-    # print('We have a total of ' + str(len(image_filenames)) + ' images.')
-    # print(f'Used {len(train_filenames)} train images')
-    # print(f'Used {len(validation_filenames)} validation images')
-    # print(f'Used {len(test_filenames)} test images')
-
-    # labels_list = categoriesNames(dataset_path)
-
-    # d = {'train_filenames': train_filenames,
-    #      'validation_filenames': validation_filenames,
-    #      'test_filenames': test_filenames,
-    #      'labels_names': labels_list}
+    # # Speed up
+    # image_filenames = random.sample(image_filenames, k=2000)
 
     # Slipt the Database 80% - Train and 20% - Test 
-    train_filenames, test_filenames = train_test_split(image_filenames, test_size=0.2)
+    # train_filenames, test_filenames = train_test_split(image_filenames, test_size=0.2)
 
-    labels_list = categoriesNames(dataset_path)
+    # labels_list = categoriesNames(dataset_folders)
+    
+    #######################################################################################
+    # Only the objects in scenes
+    #######################################################################################
+    image_path = glob.glob('../../rgbd-dataset/*/*/*_crop.png')
+    categories_scenes = ['bowl', 'cap', 'cereal_box', 'coffee_mug', 'soda_can'] 
+    dataset_folders = '../../rgbd-dataset'
+    selected_folders = [folder.split('/')[-1]
+                        for obj in categories_scenes
+                        for folder in os.listdir(os.path.join(dataset_folders, obj))
+                        if os.path.isdir(os.path.join(dataset_folders, obj, folder))]
 
-    d = {'train_filenames': train_filenames,
-         'test_filenames': test_filenames}
+    print(f'Only these objects are selected: {categories_scenes} \n\nThe objects: {selected_folders}\n\nNumber of objects: {len(selected_folders)}')
+
+    ################ Slipt the Database 80% - Train and 20% - Test ################ 
+    # train_folders, test_folders = train_test_split(selected_folders, test_size=0.2)
+    # print(f'For train we have {len(train_folders)}\n{train_folders}\n')
+    # print(f'For test we have {len(test_folders)}\n{test_folders}\n')
+
+    # Better split manualy, because are only 6 objects for test (Ensuring they are all tested)
+    test_folders = ['bowl_6', 'cap_2', 'cereal_box_5', 'coffee_mug_7', 'coffee_mug_8', 'soda_can_6']
+    train_folders = [folder for folder in selected_folders if folder not in test_folders]
+
+    train_filenames = [filename for filename in image_path if any(f'/{obj}/' in filename for obj in train_folders)]
+    test_filenames = [filename for filename in image_path if any(f'/{obj}/' in filename for obj in test_folders)]
+
+    classes = {labels_list: i for i, labels_list in enumerate(categories_scenes)}
+    json_categories = json.dumps(classes, indent=2)
+    with open("categories.json", "w") as outfile:
+        outfile.write(json_categories)
+    
+    d = {'train_filenames': random.sample(train_filenames, len(train_filenames)),
+         'test_filenames': random.sample(test_filenames, len(test_filenames))}
 
     json_object = json.dumps(d, indent=2)
 
@@ -65,7 +81,7 @@ def main():
     with open("dataset_filenames.json", "w") as outfile:
         outfile.write(json_object)
 
-    print('We have a total of ' + str(len(image_filenames)) + ' images')
+    print('We have a total of ' + str(len(image_path)) + ' images')
     print(f'Used {len(train_filenames)} train images')
     print(f'Used {len(test_filenames)} test images')
     print('Categories names saved')

@@ -36,7 +36,7 @@ class Model(nn.Module):
 
         self.fc1 = nn.Linear(3*3*64, 25)
         self.dropout = nn.Dropout(0.5)
-        self.fc2 = nn.Linear(25, 51)
+        self.fc2 = nn.Linear(25, 5) # Change for number of categories (in all dataset: self.fc2 = nn.Linear(25, 51))
         self.relu = nn.ReLU()
 
     def forward(self, x):

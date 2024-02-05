@@ -16,9 +16,9 @@ def main():
     # -----------------------------------------------------------------
     # Hyperparameters Initialization
     # -----------------------------------------------------------------
-    batch_size = 100 # "Sample" #100
+    batch_size = 50 # "Sample" #100
     learning_rate = 0.001
-    max_num_epochs = 60 # Number of epoch (passes through the dataset) #20
+    max_num_epochs = 15 # Number of epoch (passes through the dataset) #20
     # loss_threshold = 0.001
 
     # -----------------------------------------------------------------

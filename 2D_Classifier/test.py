@@ -2,43 +2,15 @@
 
 import json
 import torch
-from torchvision import transforms
+import random
+import numpy as np
 import matplotlib.pyplot as plt
-
+import torch.nn.functional as F
 from dataset import Dataset
 from model import Model
-import torch.nn.functional as F
-
-
-def metrics(ground_truth, predicted, l):
-    # Count FP, FN, TP, and TN
-    TP, FP, TN, FN = 0, 0, 0, 0
-    for gt, pred in zip(ground_truth, predicted):
-
-        if gt == l and pred == l:  # True positive
-            TP += l
-        elif gt != l and pred == l:  # False positive
-            FP += 1
-        elif gt == l and pred == l:  # False negative
-            FN += 1
-        elif gt == l and pred == l:  # True negative
-            TN += 1
-
-    # Compute precision and recall
-    precision = TP / (TP + FP)
-    recall = TP / (TP + FN)
-    f1_score = 2 * (precision*recall)/(precision+recall)
-
-    return TP, FP, FN, TN, precision, recall, f1_score
-
+from sklearn import metrics
 
 def main():
-    # -----------------------------------------------------------------
-    # Hyperparameters initialization
-    # -----------------------------------------------------------------
-    learning_rate = 0.001
-    num_epochs = 50
-
     # -----------------------------------------------------------------
     # Create model
     # -----------------------------------------------------------------
@@ -48,16 +20,13 @@ def main():
     # Prepare Datasets
     # -----------------------------------------------------------------
     with open('dataset_filenames.json', 'r') as f:
+        # Reading from json file
         dataset_filenames = json.load(f)
 
-    with open('categories.json', 'r') as f:
-        categories_dict = json.load(f)
-
     test_filenames = dataset_filenames['test_filenames']
-    # test_filenames = test_filenames[0:100]
-
-    labels_names = categories_dict
-
+    print(f'Test {len(test_filenames)} images')
+    test_filenames = test_filenames[0:2000]
+    # test_filenames = random.sample(test_filenames, 2000)
     print('Used ' + str(len(test_filenames)) + ' for testing ')
 
     test_dataset = Dataset(test_filenames)
@@ -65,23 +34,23 @@ def main():
     batch_size = len(test_filenames)
     test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True)
 
-    # Just for testing the train_loader
-    tensor_to_pil_image = transforms.ToPILImage()
-
     # -----------------------------------------------------------------
     # Prediction
     # -----------------------------------------------------------------
-    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-
+    # device = 'cuda' if torch.cuda.is_available() else 'cpu' #Doesn't work idk
+    device = 'cpu'
+    
     # Load the trained model
     checkpoint = torch.load('models/checkpoint.pkl')
     model.load_state_dict(checkpoint['model_state_dict'])
 
     model.to(device)
     model.eval()  # we are in testing mode
-    batch_losses = []
-    for batch_idx, (inputs, labels_gt) in enumerate(test_loader):
 
+    predicted_is = []
+    labels_gt_np = []
+
+    for batch_idx, (inputs, labels_gt) in enumerate(test_loader):
         # move tensors to device
         inputs = inputs.to(device)
         labels_gt = labels_gt.to(device)
@@ -89,52 +58,35 @@ def main():
         # Get predicted labels
         labels_predicted = model.forward(inputs)
 
-    # Transform predicted labels into probabilities
-    predicted_probabilities = F.softmax(labels_predicted, dim=1).tolist()
+        # Transform predicted labels into probabilities
+        predicted_probabilities = F.softmax(labels_predicted, dim=1).tolist()
 
-    
-    predicted_is = []
-    variables = ["bowl", "cap", "cereal", "coffee", "soda"]
-    # Make a decision using the largest probability
-    for i in predicted_probabilities:
-        idx = i.index(max(i))
-        # predicted_is.append(variables[idx])
-        predicted_is.append(idx)
+        # Make a decision using the largest probability
+        for i in predicted_probabilities:
+            idx = i.index(max(i))
+            predicted_is.append(idx)
 
+        labels_gt_np = labels_gt.cpu().detach().numpy()
 
-    labels_gt_np = labels_gt.cpu().detach().numpy()
+    # Accuracy = metrics.accuracy_score(labels_gt_np, predicted_is)
+    Precision = metrics.precision_score(labels_gt_np, predicted_is, average='weighted')
+    Sensitivity_recall = metrics.recall_score(labels_gt_np, predicted_is, average='weighted')
+    F1_score = metrics.f1_score(labels_gt_np, predicted_is, average='weighted')
+    print(f'Precision = {Precision}') # In the simplest terms, Precision is the ratio between the True Positives and all the points that are classified as Positives.
+    print(f'Recall = {Sensitivity_recall}') # To put it simply, Recall is the measure of our model correctly identifying True Positives. It is also called a True positive rate.
+    print(f'F1_score = {F1_score}') # F1-score is the Harmonic mean of the Precision and Recall
 
-    # Show Images
-    labels_names = {value: key for key, value in labels_names.items()}
-    fig = plt.figure()
-    idx_image = 0
-    for row in range(4):
-        for cols in range(4):
-            image_tensor = inputs[idx_image, :, :, :]
-            image_pil = tensor_to_pil_image(image_tensor)
+    confusion_matrix = metrics.confusion_matrix(labels_gt_np, predicted_is)
 
-            ax = fig.add_subplot(4,4,idx_image+1)
-            plt.imshow(image_pil)
+    # Normalizar a matriz de confusão manualmente
+    normalized_confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis]
 
-            # Remove axis
-            ax.xaxis.set_ticklabels([])
-            ax.yaxis.set_ticklabels([])
-            ax.xaxis.set_ticks([])
-            ax.yaxis.set_ticks([])
+    # Criar ConfusionMatrixDisplay com a matriz normalizada
+    num_classes = len(np.unique(labels_gt_np))
+    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix=normalized_confusion_matrix, display_labels=range(num_classes))
 
-            ground_truth = labels_gt_np[idx_image]
-            predicted = predicted_is[idx_image]
-
-            if ground_truth == predicted:
-                color = 'green'
-            else:
-                color = 'red'
-
-            text = labels_names.get(predicted)
-            # Put labels
-            ax.set_xlabel(text, color = color)
-
-            idx_image +=1
+    # Exibir a matriz de confusão
+    cm_display.plot(cmap='viridis', values_format='.2f')  # Não é necessário 'normalize' aqui
 
     plt.show()
 
