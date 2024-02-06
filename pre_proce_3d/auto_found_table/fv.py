@@ -20,13 +20,13 @@ view ={
 	"trajectory" : 
 	[
 		{
-			"boundingbox_max" : [ 0.70914378762245178, 0.22959384077520512, 2.0597424507141113 ],
-			"boundingbox_min" : [ -0.73871105909347534, -0.30997958779335022, 0.73439687490463257 ],
+			"boundingbox_max" : [ 0.22767170962805933, -0.0022520239359177401, 1.7842442989349365 ],
+			"boundingbox_min" : [ -0.42231124639511108, -0.41206100583076477, 0.91321682929992676 ],
 			"field_of_view" : 60.0,
-			"front" : [ 0.14095174342777114, -0.41341896209763335, -0.89956509925785111 ],
-			"lookat" : [ 0.26243634826393109, -1.2711610996847007, -1.584954423393417 ],
-			"up" : [ -0.10355452711760713, -0.90980883554453118, 0.40190091151744506 ],
-			"zoom" : 0.02
+			"front" : [ 0.1878652959213393, -0.71166349814152796, -0.67693551834820354 ],
+			"lookat" : [ 0.109665391039239, -1.7225866963565499, -0.354487327376658 ],
+			"up" : [ -0.29636348128125029, -0.69815656053375841, 0.65172548204480296 ],
+			"zoom" : 0.3412
 		}
 	],
 	"version_major" : 1,
@@ -69,9 +69,7 @@ def main():
     # --------------------------------------
     # Initialization
     # --------------------------------------
-    
     filename = '../rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/01.ply'
-   
     #05 06 07 08 gives me problems,table legs separate from the table
     # 13 14 gives me probles, 
     print('Loading file ' + filename)
@@ -93,7 +91,6 @@ def main():
     #    
     pcd_downsampled = pcd_original.voxel_down_sample(voxel_size=0.02)
     #pcd_downsampled.paint_uniform_color([0,0,1])#pintar a malha com uma cor
-    # estimate normals
     pcd_downsampled.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
     pcd_downsampled.orient_normals_to_align_with_direction(orientation_reference=np.array([0, 0, 1]))
     
@@ -116,8 +113,6 @@ def main():
         elif len(pcd_point_cloud.points) < plane_min_points:
             print('number of remaining points <' + str(plane_min_points))
             break
-    
-
     table_plane_mean_xy = 10000
     centers=[]
     for plane_idx,plane in enumerate(planes):
@@ -127,7 +122,6 @@ def main():
         mean_x = center[0]
         mean_y = center[1]
         mean_z = center[2]
-
         mean_xy = abs(mean_x) + abs(mean_y)
         if mean_xy < table_plane_mean_xy:
             table_plane = plane
@@ -135,8 +129,7 @@ def main():
 
     #
     # create the reference of the found plans
-    #
-            
+    #         
     frame_1 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=2, origin=np.array([centers[0][0],centers[0][1],centers[0][2]]))
     #frame_2 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=0.5, origin=np.array([centers[1][0],centers[1][1],centers[1][2]]))
     frame_main = o3d.geometry.TriangleMesh().create_coordinate_frame(size=2, origin=np.array([0,0,0]))
@@ -150,7 +143,6 @@ def main():
     print('groud_idx:',group_idxs)
     num_groups = len(group_idxs)
     colormap = cm.Pastel1(range(0, num_groups))
-
     center_clouds=[]
     norms_vetor_center=[]
     pcd_sep_objects = []
@@ -161,7 +153,6 @@ def main():
         color = colormap[group_idx, 0:3]
         #pcd_separate_object.paint_uniform_color(color)
         pcd_sep_objects.append(pcd_separate_object)
-        
         #print(pcd_separate_object)
         print('The point cloud nº ',group_idx,' is centered at',center)
         center=pcd_separate_object.get_center()
@@ -169,7 +160,6 @@ def main():
         quadratic= ((center[0]-mean_x)**2)+((center[1]-mean_y)**2)+((center[2]-mean_z)**2) 
         norm=math.sqrt(quadratic)
         print('the norm value',norm)
-        
         frame_2 = o3d.geometry.TriangleMesh().create_coordinate_frame(size=2, origin=np.array([center[0],center[1],center[2]]))
         if norm<a and group_idx!=-1:
             id_table=group_idx
@@ -193,7 +183,6 @@ def main():
     group_idxs_2 = list(set(labels_2))
     print('groud_idx:',group_idxs_2)
     num_groups_2 = len(group_idxs_2)
-    
     pcd_sep_objects_2=[]
     for group_idx_2 in group_idxs_2:
         group_points_idxs_2 = list(locate(labels_2, lambda x: x == group_idx_2))
@@ -201,23 +190,29 @@ def main():
         #pcd_sep_object_2.paint_uniform_color(color)
         pcd_sep_objects_2.append(pcd_sep_object_2)
 
+    #
+    # get the properties of objects
+    # 
+    for i in range(len(pcd_sep_objects_2)-1):
+        print('Object number: ',i)
+        #n_points=pcd_sep_objects_2[i].points
+        n_points = np.asarray(pcd_sep_objects_2[i].points)
+        print('numero de pontos do objeto: ',len(n_points))
+        
+
+
+
     #------------------------------------------------------------------
     # Visualization 
     #------------------------------------------------------------------
-    
-    pcds_to_draw=[]
-    max_index=len(pcd_sep_objects_2)
-    print('max_index',max_index)
-    for i in range(max_index-1):
-        pcds_to_draw.append(pcd_sep_objects_2[i])
-        print(i)
-    
-    #pcds_to_draw = [pcd_inlier_cloud_2,pcd_sep_objects_2[:group_idx_2]]
-     
-    
-    
-
     entities = []
+
+    pcds_to_draw=[]
+    for i in range(len(pcd_sep_objects_2)-1):
+        pcds_to_draw.append(pcd_sep_objects_2[i])
+        bbox=pcd_sep_objects_2[i].get_oriented_bounding_box()
+        entities.append(bbox)
+  
     # entities.append(frame_main)
     #entities.append(frame_1)
     #entities.append(pcd_inlier_cloud)
