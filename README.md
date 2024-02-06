@@ -12,14 +12,13 @@ SAVI - 2023/2024 Universidade de Aveiro
  <br>
 
  ## Program Description
- This project was carried out as part of the "Advanced Industrial Vision Systems " subject, at the University of Aveiro, it was developed in OpenCV in Python3. 
+ This project was carried out as part of the "Advanced Industrial Vision Systems " subject, at the University of Aveiro, it was developed in OpenCV using Python. 
  This system is able to process information that was taken from 3d sensors and also RGB cameras, the goal, is to use that information and detect some objects on random scenes and classify them by their properties, color, area, etc.
  It starts by pre-processing the 3D scenarios and isolates each object, after that the program is able to create a boundingbox around each object and get their properties, color, area and volume, finally, the output of the program is the point clouds of the isolated objects of a certain scenario each one with a different color just to distinguish them in an easier way as you can see by the image below.
  
 <p align="center">
   <img src="/2D_Classifier/Results/isolated_objects_preprocess3d.jpeg" alt="Alt text">
 </p>
-
 
  After the 3D pre-processing, the system compares the object's point cloud got by the 3D pre-processing, with the objects already in the database, then it classifies the object through the object's point cloud coordinates and then gets it's matching class through.
 
@@ -72,17 +71,25 @@ And finally run the "main.py" file.
  
 ## Project Evaluation Criteria
 
-  | % | Objetivo  |    Tarefa     |
-  | ------------- | ------------- |
-  |15%| Objetivo 1|Treino de um classificador|
-  |15%| Objetivo 2|Pré-processamento 3D|
-  |15%| Objetivo 3|Classificação objetos na cena|
-  |10%| Objetivo 4|Descrição audio|
-  |15%| Objetivo 5|Métricas de performance|
-  |5% | Objetivo 6|Sistema em tempo real|
-  |10%| Objetivo 7|Aspeto geral do software|
-  |5% | Objetivo 8|Extras|
-  |10%| Objetivo 9|Código e Github|
+| % | Objetivo  |    Tarefa     |
+|:-------------:|:-------------:|
+|15%| Objetivo 1|Treino de um classificador|
+|15%| Objetivo 2|Pré-processamento 3D|
+|15%| Objetivo 3|Classificação objetos na cena|
+|10%| Objetivo 4|Descrição audio|
+|15%| Objetivo 5|Métricas de performance|
+|5% | Objetivo 6|Sistema em tempo real|
+|10%| Objetivo 7|Aspeto geral do software|
+|5% | Objetivo 8|Extras|
+|10%| Objetivo 9|Código e Github|
+
+  | Parameters | Value |
+| :---:         |     :---:      |
+| Epochs   | 15     | 
+| Training Files     | 9000       | 
+| Validation Files     | 3600       |
+| Training Batch Size    | 32       |
+| Validation Batch Size      | 64       |
   
 
    
