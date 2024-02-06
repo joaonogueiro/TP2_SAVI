@@ -71,25 +71,16 @@ And finally run the "main.py" file.
  
 ## Project Evaluation Criteria
 
-| % | Objetivo  |    Tarefa     |
-|:-------------:|:-------------:|
-|15%| Objetivo 1|Treino de um classificador|
-|15%| Objetivo 2|Pré-processamento 3D|
-|15%| Objetivo 3|Classificação objetos na cena|
-|10%| Objetivo 4|Descrição audio|
-|15%| Objetivo 5|Métricas de performance|
-|5% | Objetivo 6|Sistema em tempo real|
-|10%| Objetivo 7|Aspeto geral do software|
-|5% | Objetivo 8|Extras|
-|10%| Objetivo 9|Código e Github|
-
-  | Parameters | Value |
+  | Percentagem | Objetivo | Tarefa |
 | :---:         |     :---:      |
-| Epochs   | 15     | 
-| Training Files     | 9000       | 
-| Validation Files     | 3600       |
-| Training Batch Size    | 32       |
-| Validation Batch Size      | 64       |
-  
+| 15%   | Objetivo 1     |   Treino de um classificador       |     
+| 15%     | Objetivo 2       |   Pré-processamento 3D       |       
+| 15%     | Objetivo 3       |   Classificação objetos na cena       |
+| 10%    | Objetivo 4       |   Descrição audio       |
+| 15%      | Objetivo 5       |   Métricas de performance       | 
+| 5%      | Objetivo 6       |   Sistema em tempo real       |
+| 10%      | Objetivo 7       |   Aspeto geral do software       |
+| 5%      | Objetivo 8       |   Extras       |
+| 10%      | Objetivo 9       |   Código e Github       |  
 
    
