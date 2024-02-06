@@ -99,7 +99,7 @@ def main():
     # Convert ply to pcd
     #    
     os.system('pcl_ply2pcd ' +filename+ ' pcd_point_cloud.pcd')
-    pcd_original_pcd = o3d.io.read_point_cloud('pcd_point_cloud.pcd')
+    pcd_original = o3d.io.read_point_cloud('pcd_point_cloud.pcd')
 
     # --------------------------------------
     # Execution
@@ -115,7 +115,7 @@ def main():
     pcd_downsampled.orient_normals_to_align_with_direction(orientation_reference=np.array([0, 0, 1]))
     
     #
-    # find all plans, plane segmentation 
+    # find the ground plane
     #
     pcd_point_cloud = deepcopy(pcd_downsampled)
     planes=[]
@@ -124,7 +124,7 @@ def main():
     while True:
         plane=PlaneDetection(pcd_point_cloud)
         [pcd_point_cloud,pcd_inlier_cloud] = plane.segment(distance_threshold=0.035, ransac_n=3, num_iterations=400) #num off iterations 200
-        pcd_inlier_cloud.paint_uniform_color((1, 0, 0))
+        #pcd_inlier_cloud.paint_uniform_color((1, 0, 0))
         print(plane)
         planes.append(plane)
         if len(planes) >= max_planes: # stop detection planes
@@ -176,7 +176,7 @@ def main():
         group_points_idxs = list(locate(labels, lambda x: x == group_idx))
         pcd_separate_object = pcd_point_cloud.select_by_index(group_points_idxs, invert=False)
         color = colormap[group_idx, 0:3]
-        pcd_separate_object.paint_uniform_color(color)
+        #pcd_separate_object.paint_uniform_color(color)
         pcd_sep_objects.append(pcd_separate_object)
         
         #print(pcd_separate_object)
@@ -199,8 +199,8 @@ def main():
     pcd_table_id=pcd_sep_objects[id_table]
     plane_2=PlaneDetection(pcd_table_id)
     [pcd_point_cloud_2,pcd_inlier_cloud_2]=plane_2.segment(distance_threshold=0.02, ransac_n=3, num_iterations=400)
-    pcd_point_cloud_2.paint_uniform_color((0, 0, 1)) # point cloud on the surface
-    pcd_inlier_cloud_2.paint_uniform_color((0, 0, 0)) #table surface
+    #pcd_point_cloud_2.paint_uniform_color((0, 0, 1)) # point cloud on the surface
+    pcd_inlier_cloud_2.paint_uniform_color((1, 0, 0)) #table surface
     
     #
     # Clustering applied to the point cloud on the table surface
@@ -215,7 +215,7 @@ def main():
     for group_idx_2 in group_idxs_2:
         group_points_idxs_2 = list(locate(labels_2, lambda x: x == group_idx_2))
         pcd_sep_object_2=pcd_point_cloud_2.select_by_index(group_points_idxs_2,invert=False)
-        pcd_sep_object_2.paint_uniform_color(color)
+        #pcd_sep_object_2.paint_uniform_color(color)
         pcd_sep_objects_2.append(pcd_sep_object_2)
 
     #------------------------------------------------------------------
@@ -224,16 +224,17 @@ def main():
     
     
     #pcds_to_draw = [pcd_point_cloud_2,pcd_inlier_cloud_2]
-    #pcds_to_draw = [pcd_inlier_cloud_2,pcd_sep_objects_2[0],pcd_sep_objects_2[1],pcd_sep_objects_2[2],pcd_sep_objects_2[3]]
+    pcds_to_draw = [pcd_sep_objects_2[0],pcd_sep_objects_2[1],pcd_sep_objects_2[2],pcd_sep_objects_2[3],
+                    pcd_sep_objects_2[4],pcd_sep_objects_2[5],pcd_sep_objects_2[6]]
     #pcds_to_draw= [pcd_point_cloud]
-    pcds_to_draw= [pcd_original_pcd,pcd_inlier_cloud_2]
+    #pcds_to_draw= [pcd_table_id,pcd_inlier_cloud_2]
     
     
 
     entities = []
     # entities.append(frame_main)
     entities.append(frame_1)
-    entities.append(pcd_inlier_cloud)
+    #entities.append(pcd_inlier_cloud)
     entities.extend(pcds_to_draw)
     
     o3d.visualization.draw_geometries(entities,
