@@ -82,7 +82,8 @@ And finally run the "main.py" file.
 </p>
 
 <summary><b>3D Pre-Processing</b></summary>
-
+This is the output of the 3D Pre-Processing process, also, in the terminal is shown the properties of each object, so that the
+user can evaluate this whole process.
 <p align="center">
   <img src="/2D_Classifier/Results/isolated_objects_preprocess3d.jpeg" alt="Alt text">
 </p>
