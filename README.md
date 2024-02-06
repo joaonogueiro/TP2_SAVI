@@ -54,7 +54,7 @@ Fazes um vídeo de demonstração rápida do programa.
   
 # Milestones
 
-###[text](../../SAVI/tp2/pre_proce_3d/cap_1) Objetivo 1 - Treino de um classificador em deep learning
+### Objetivo 1 - Treino de um classificador em deep learning
 
 Pretende-se que o sistema desenvolvido seja capaz de detetar objetos na cena (em dados do RGB-D Scenes Dataset) e depois calcule várias propriedades dos objetos.
 
