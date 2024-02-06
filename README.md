@@ -14,7 +14,7 @@ SAVI - 2023/2024 Universidade de Aveiro
  ## Program Description
  This project was carried out as part of the "Advanced Industrial Vision Systems " subject, at the University of Aveiro, it was developed in OpenCV using Python. 
  This system is able to process information that was taken from 3d sensors and also RGB cameras, the goal, is to use that information and detect some objects on random scenes and classify them by their properties, color, area, etc.
- It starts by pre-processing the 3D scenarios and isolates each object, after that the program is able to create a boundingbox around each object and get their properties, color, area and volume, finally, the output of the program is the point clouds of the isolated objects of a certain scenario each one with a different color just to distinguish them in an easier way as you can see by the image below.
+ It starts by pre-processing the 3D scenarios and isolates each object, after that the program is able to create a boundingbox around each object and get their properties, color, area and volume, finally, the output of the program is the point clouds of the isolated objects of a certain scenario each one with a different color just to distinguish them in an easier way as you can see by the image below, also, the program is able to tell you the properties of each object like mencioned above.
  
 <p align="center">
   <img src="/2D_Classifier/Results/isolated_objects_preprocess3d.jpeg" alt="Alt text">
