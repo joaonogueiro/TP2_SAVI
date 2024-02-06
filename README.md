@@ -35,6 +35,7 @@ SAVI - 2023/2024 Universidade de Aveiro
 - `pip install open3d`
 - `pip install gtts`
 - `pip install pcl_viewer`
+- `pip install pyttsx3`
 <br>
 
 ## User's Guide
