@@ -58,6 +58,27 @@ view = {
 	"version_minor" : 0
 }
 
+
+
+# Function to get each objects color
+def get_object_colors(pcd_objects, labels):
+    object_colors = []
+
+    for group_idx in set(labels):
+        if group_idx == -1:
+            continue  # Skip unassigned points
+
+        group_points_idxs = list(locate(labels, lambda x: x == group_idx))
+        pcd_separate_object = pcd_objects.select_by_index(group_points_idxs, invert=False)
+        colors = np.asarray(pcd_separate_object.colors)
+        object_color = np.mean(colors, axis=0)  # Calculate mean color of the object
+        object_colors.append(object_color)
+
+    return object_colors
+
+
+
+# Function to convert ply to pcd
 def convert_ply_to_pcd(ply_file, pcd_file):
     # Read the .ply file
     point_cloud = o3d.io.read_point_cloud(ply_file)
@@ -78,6 +99,7 @@ def draw_registration_result(source, target, transformation):
                                       front=[0.9288, -0.2951, -0.2242],
                                       lookat=[1.6784, 2.0612, 1.4451],
                                       up=[-0.3402, -0.9189, -0.1996])
+
 
 
 def main():
@@ -235,54 +257,14 @@ def main():
         pcd_separate_objects.append(pcd_separate_object)
 
 
-
-
-    # --------------------------------------
-    # ICP for object classification
-    # -------------------------------------
+    # # --------------------------------------
+    # # ICP for object classification
+    # # -------------------------------------
     
-    pcd_cap = o3d.io.read_point_cloud('../cap_1/rgbd-dataset/cap/cap_1/cap_1_1_1.pcd')
-    pcd_cap_downsampled = pcd_cap.voxel_down_sample(voxel_size=0.005)
-    pcd_cap_downsampled.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
-    pcd_cap_downsampled.orient_normals_to_align_with_direction(orientation_reference=np.array([0, 0, 1]))
-
-    # objects_data = []
-    # for idx, pcd_separate_object in enumerate(pcd_separate_objects):
-
-    #     Tinit = np.eye(4, dtype=float)  # null transformation
-    #     reg_p2p = o3d.pipelines.registration.registration_icp(pcd_cap_downsampled, pcd_separate_object, 0.9, Tinit,
-    #                                                           o3d.pipelines.registration.TransformationEstimationPointToPoint(),
-    #                                                           o3d.pipelines.registration.ICPConvergenceCriteria(max_iteration=2000))
-
-    #     print('object idx ' + str(idx))
-    #     print('reg_p2p = ' + str(reg_p2p))
-
-    #     print("Transformation is:")
-    #     print(reg_p2p.transformation)
-
-    #     # draw_registration_result(pcd_separate_object, pcd_cap_downsampled, np.linalg.inv(reg_p2p.transformation))
-    #     objects_data.append({'transformation': reg_p2p.transformation, 'rmse': reg_p2p.inlier_rmse})
-
-    # # Select which of the objects in the table is a cereal box by getting the minimum rmse
-    # min_rmse = None
-    # min_rmse_idx = None
-
-    # for idx, object_data in enumerate(objects_data):
-
-    #     if min_rmse is None:  # first object, use as minimum
-    #         min_rmse = object_data['rmse']
-    #         min_rmse_idx = idx
-
-    #     if object_data['rmse'] < min_rmse:
-    #         min_rmse = object_data['rmse']
-    #         min_rmse_idx = idx
-
-    # print('Object idx ' + str(min_rmse_idx) + ' is the cap')
-    # draw_registration_result(pcd_separate_objects[min_rmse_idx], pcd_cap_downsampled,
-    #                          np.linalg.inv(objects_data[min_rmse_idx]['transformation']))
-
-    # print(objects_data)
-
+    # pcd_cap = o3d.io.read_point_cloud('../cap_1/rgbd-dataset/cap/cap_1/cap_1_1_1.pcd')
+    # pcd_cap_downsampled = pcd_cap.voxel_down_sample(voxel_size=0.005)
+    # pcd_cap_downsampled.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+    # pcd_cap_downsampled.orient_normals_to_align_with_direction(orientation_reference=np.array([0, 0, 1]))
 
     
     # --------------------------------------
@@ -308,6 +290,7 @@ def main():
     pcds_to_draw = []
     entities = [] 
     # pcds_to_draw.extend(pcd_separate_objects)
+    
     # Iterate through pcd_separate_objects, excluding the last object
     for idx in range(len(pcd_separate_objects) - 1):
         pcds_to_draw.append(pcd_separate_objects[idx])
@@ -325,19 +308,27 @@ def main():
         lengths = bbox.get_max_bound() - bbox.get_min_bound()
         length, width, height = lengths[0], lengths[1], lengths[2]
 
-        # Extract orientation angles (in radians)
-        # angles = bbox.get_rotation_matrix().as_euler_angles()
-
-        # Convert orientation angles to degrees for better readability
-        # orientation_degrees = np.degrees(angles)
+        # Calculate area and volume of each object
+        area = 2 * (length * width + width * height + height * length)
+        volume = length * width * height
 
         # Print properties
         print(f"Object {idx + 1}:")
         print(f"Centroid: {centroid}")
         print(f"Dimensions (LxWxH): {length} x {width} x {height}")
-        # print(f"Orientation (degrees): {orientation_degrees}")
-        # print()
-    
+        print(f"Area: {area}")
+        print(f"Volume: {volume}")
+
+        # get each objects color
+        object_colors = get_object_colors(pcd_objects, labels)
+        for idx, color in enumerate(object_colors):
+            print(f"Color of object {idx + 1}: {color}")
+
+
+        
+    # saving the isolated objects ply
+    o3d.io.write_point_cloud("output_iso_obj_2.ply", pcd_separate_objects[2])
+    print("Saving isolated object in .ply format file.")
 
 
     frame_world = o3d.geometry.TriangleMesh().create_coordinate_frame(size=0.5, origin=np.array([0., 0., 0.]))
