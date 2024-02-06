@@ -11,25 +11,8 @@ from matplotlib import cm
 from more_itertools import locate
 import os
 
-# view = {
-# 	"class_name" : "ViewTrajectory",
-# 	"interval" : 29,
-# 	"is_loop" : False,
-# 	"trajectory" : 
-# 	[
-# 		{
-# 			"boundingbox_max" : [ 2.7116048336029053, 1.2182252407073975, 3.8905272483825684 ],
-# 			"boundingbox_min" : [ -2.4257750511169434, -1.6397310495376587, -1.3339539766311646 ],
-# 			"field_of_view" : 60.0,
-# 			"front" : [ -0.42435722763098271, -0.32421248457999857, -0.84546271839733456 ],
-# 			"lookat" : [ -2.9988803724941846, -3.4141542364877826, -5.8212961795348663 ],
-# 			"up" : [ 0.15190921113526218, -0.94595945552288074, 0.28650357777716767 ],
-# 			"zoom" : 0.02
-# 		}
-# 	],
-# 	"version_major" : 1,
-# 	"version_minor" : 0
-# }
+
+
 view ={
 	"class_name" : "ViewTrajectory",
 	"interval" : 29,
@@ -37,13 +20,13 @@ view ={
 	"trajectory" : 
 	[
 		{
-			"boundingbox_max" : [ 2.7116048336029053, 2.1119286083578719, 3.8866173028945923 ],
-			"boundingbox_min" : [ -2.4257750511169434, -1.6397310495376587, -1.3339539766311646 ],
+			"boundingbox_max" : [ 0.70914378762245178, 0.22959384077520512, 2.0597424507141113 ],
+			"boundingbox_min" : [ -0.73871105909347534, -0.30997958779335022, 0.73439687490463257 ],
 			"field_of_view" : 60.0,
-			"front" : [ -0.15193648577769645, -0.23208931770736052, -0.96075483495825087 ],
-			"lookat" : [ -0.22515029830609409, -0.76333748855384898, -2.9182553144916161 ],
-			"up" : [ 0.2131159150101142, -0.95686783757857208, 0.19744758336609 ],
-			"zoom" : 0.12000000000000001
+			"front" : [ 0.14095174342777114, -0.41341896209763335, -0.89956509925785111 ],
+			"lookat" : [ 0.26243634826393109, -1.2711610996847007, -1.584954423393417 ],
+			"up" : [ -0.10355452711760713, -0.90980883554453118, 0.40190091151744506 ],
+			"zoom" : 0.02
 		}
 	],
 	"version_major" : 1,
@@ -87,7 +70,7 @@ def main():
     # Initialization
     # --------------------------------------
     
-    filename = '../rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/02.ply'
+    filename = '../rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/01.ply'
    
     #05 06 07 08 gives me problems,table legs separate from the table
     # 13 14 gives me probles, 
@@ -222,18 +205,21 @@ def main():
     # Visualization 
     #------------------------------------------------------------------
     
+    pcds_to_draw=[]
+    max_index=len(pcd_sep_objects_2)
+    print('max_index',max_index)
+    for i in range(max_index-1):
+        pcds_to_draw.append(pcd_sep_objects_2[i])
+        print(i)
     
-    #pcds_to_draw = [pcd_point_cloud_2,pcd_inlier_cloud_2]
-    pcds_to_draw = [pcd_sep_objects_2[0],pcd_sep_objects_2[1],pcd_sep_objects_2[2],pcd_sep_objects_2[3],
-                    pcd_sep_objects_2[4],pcd_sep_objects_2[5],pcd_sep_objects_2[6]]
-    #pcds_to_draw= [pcd_point_cloud]
-    #pcds_to_draw= [pcd_table_id,pcd_inlier_cloud_2]
+    #pcds_to_draw = [pcd_inlier_cloud_2,pcd_sep_objects_2[:group_idx_2]]
+     
     
     
 
     entities = []
     # entities.append(frame_main)
-    entities.append(frame_1)
+    #entities.append(frame_1)
     #entities.append(pcd_inlier_cloud)
     entities.extend(pcds_to_draw)
     
