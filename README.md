@@ -47,13 +47,13 @@ To run this system you have to follow these steps:
 ```bash
 git clone https://github.com/joaonogueiro/TP2_SAVI.git
 ```
-After cloning the repository, run the 3D pre-processing script to get the object's point clouds. 
+2nd. After cloning the repository, run the 3D pre-processing script to get the object's point clouds. 
 For that, you have to change the directory to:
 ```bash
 cd TP2_SAVI/pre_proce_3d/auto_found_table/main_3dpreprocess.py
 ```
 
-Then, after getting the point clouds of certain objects, go to:
+3rd. Then, after getting the point clouds of certain objects, go to:
 ```bash
 cd TP2_SAVI/2D_Classifier/
 ```
