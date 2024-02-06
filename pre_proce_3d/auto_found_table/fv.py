@@ -49,6 +49,8 @@ view ={
 	"version_minor" : 0
 }
 
+
+
 class PlaneDetection():
     def __init__(self, point_cloud):
 
@@ -84,7 +86,7 @@ def main():
     # Initialization
     # --------------------------------------
     
-    filename = '../rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/01.ply'
+    filename = '../rgbd-scenes-v2_pc/rgbd-scenes-v2/pc/02.ply'
    
     #05 06 07 08 gives me problems,table legs separate from the table
     # 13 14 gives me probles, 
