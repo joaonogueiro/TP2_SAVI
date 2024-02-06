@@ -16,7 +16,7 @@ SAVI - 2023/2024 Universidade de Aveiro
  It starts by pre-processing the 3D scenarios and isolates each object, after that the program is able to create a boundingbox around each object and get their properties, color, area and volume, finally, the output of the program is the point clouds of the isolated objects of a certain scenario each one with a different color just to distinguish them in an easier way. Check the image below.
  
 <p align="center">
-  <img src="/home/nunocunha99/Desktop/MEAI/2ano/1sem/practical_works_savi/TP2_SAVI/2D_Classifier/Results/isolated_objects_preprocess3d.jpeg" alt="Alt text">
+  <img src="/2D_Classifier/Results/isolated_objects_preprocess3d.jpeg" alt="Alt text">
 </p>
 
 
