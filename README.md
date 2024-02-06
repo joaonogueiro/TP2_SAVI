@@ -90,7 +90,19 @@ Utilizando uma câmara RGB-D em frente a uma mesa, experimente o sistema a corre
 
 # Desenvolvimento
 
-## treino de um classificador
+## Classificador 2D deep Learning
+
+No desenvolvimento do classificador 2D foram utilizadas apenas as 5 categorias (bowls, caps, cereal boxes, coffee mugs, and soda cans) que se encontram nos cenários. 
+Das subclasses extraidas do RGB-D Scenes Dataset,  80% foram para treino e 20% teste.
+
+Os parâmetros utilizados:
+  |   Parametro   |     Valor     |
+  | ------------- | ------------- |
+  |               |               |
+
+(INCOMPLETOOOO)
+  
+
 
 ## pré processamento
 ### ler a nuvem de pontos:
