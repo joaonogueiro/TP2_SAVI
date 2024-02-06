@@ -1,49 +1,47 @@
 # TP2_SAVI
-Trabalho elaborado no âmbito da unidade curricular de Sistemas Avançados de Visão Industrial da Universidade de Aveiro.
 
-Pratical Work 2  - SAVI - Where's my coffee mug? <br>
+**Pratical Work 2  - SAVI - Where's my coffee mug?** <br>
 SAVI - 2023/2024 Universidade de Aveiro
 <br>
 <br>
-## Contribuidores: 
-### Grupo JJJ
+## Authors: 
+### Group JJJ
 - João Figueiredo (116189) vie.fig@ua.pt
 - João Nogueiro (111807) joao.nogueiro@ua.pt
-- Nuno Cunha (95167) nunocunha99@ua.pt
+- José Nuno Cunha (95167) nunocunha99@ua.pt
  <br>
 
+ ## Program Description
+ This project was carried out as part of the "Advanced Industrial Vision Systems " subject, at the University of Aveiro. This system is able to process information that was taken from 3d sensors and also RGB cameras, the goal, is to use that information and detect some objects on random scenes and classify them by their properties, color, area, etc.
+ It starts by pre-processing the 3D scenarios and isolates each object and compares it to the objects already in the database, then it classifies the object by it's matching class.
 
- ## Instalação
-Dependências de pacotes:
+
+ ## Used data in the development of the program
+ [RGB-D Object Dataset](https://rgbd-dataset.cs.washington.edu/dataset/)
+ [RGB-D Scenes Dataset](https://rgbd-dataset.cs.washington.edu/dataset/)
+ These are from: Washington RGB-D Dataset
+
+
+ ## Libraries and dependencies installation
+ These are the libraries that you have to have on your computer to run this program:
 - `pip install opencv-python`
 - `pip install open3d`
 - `pip install gtts`
 and some more
 <br>
 
-## Guia de utilizador
+## User's Guide
 <br>
 
 
-## Demonstração
+## Demonstrational Video
 Fazes um vídeo de demonstração rápida do programa.
 
-
-## Updates aos scripts
-UPDATE:
- - ficheiro class_teaching.py lê as imagens da pasta "teach_dataset", obtém o nome da classe de cada imagem e guarda as classes num array.
- - ficheiro obect_classifier.py lê as imagens que tiver que ler, faz um retângulo à volta do objeto de modo a identificar o objeto, após isto
- é aplicar feature matching e comparar a imagem atual com a imagem modelo da class e verificar a accuracy/confidence, se for acima de 0,85 (suponhamos), pertence à classe, se for abaixo, continua a iterar pelas imagens modelo das classes. 
-
- a pasta "teach_dataset" deve estar dentro da pasta "rgbd-dataset" sendo que esta está no mesmo local do script a executar, isto eventualmente pode alterar, mas para já, está assim.
-
-  - README atualizado, no entanto, convém verificar se há ou haverão mais librarias a adicionar para o stor instalar ao testar o sistema
-
  
- # Tópicos e percentagens para avaliação
+## Evaluation Criteria
 
-  | Percentagem  | Objetivo |Tarefa|
-| ------------- | ------------- |---------|
+  | % | Objetivo  |    Tarefa     |
+  | ------------- | ------------- |
   |15%| Objetivo 1|Treino de um classificador|
   |15%| Objetivo 2|Pré-processamento 3D|
   |15%| Objetivo 3|Classificação objetos na cena|
@@ -54,9 +52,9 @@ UPDATE:
   |5% | Objetivo 8|Extras|
   |10%| Objetivo 9|Código e Github|
   
-# Objetivos
+# Milestones
 
-### Objetivo 1 - Treino de um classificador em deep learning
+###[text](../../SAVI/tp2/pre_proce_3d/cap_1) Objetivo 1 - Treino de um classificador em deep learning
 
 Pretende-se que o sistema desenvolvido seja capaz de detetar objetos na cena (em dados do RGB-D Scenes Dataset) e depois calcule várias propriedades dos objetos.
 
