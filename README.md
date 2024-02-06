@@ -21,7 +21,10 @@ SAVI - 2023/2024 Universidade de Aveiro
 </p>
 
  After the 3D pre-processing, the system compares the object's point cloud got by the 3D pre-processing, with the objects already in the database, then it classifies the object through the object's point cloud coordinates and then gets it's matching class through.
-
+ 
+ The 2D classifier in deep learning was developed using images available in the RGB-D Object Dataset, accessible at: https://rgbd-dataset.cs.washington.edu/dataset/
+From the dataset, only the 5 categories (bowls, caps, cereal boxes, coffee mugs, and soda cans) appearing in the 14 scenarios were utilized.
+The Classifier_2D.py takes a PIL-format image as input and returns the predicted class.
 
  ## Used data in the development of the program
  [RGB-D Object Dataset](https://rgbd-dataset.cs.washington.edu/dataset/)
