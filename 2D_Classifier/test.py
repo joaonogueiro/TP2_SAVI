@@ -82,8 +82,8 @@ def main():
     normalized_confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis]
 
     # Criar ConfusionMatrixDisplay com a matriz normalizada
-    num_classes = len(np.unique(labels_gt_np))
-    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix=normalized_confusion_matrix, display_labels=range(num_classes))
+    categories = ['bowl', 'cap', 'cereal_box', 'coffee_mug', 'soda_can'] 
+    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix=normalized_confusion_matrix, display_labels=categories)
 
     # Exibir a matriz de confusão
     cm_display.plot(cmap='viridis', values_format='.2f')  # Não é necessário 'normalize' aqui
