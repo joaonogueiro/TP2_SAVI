@@ -63,7 +63,7 @@ And finally run the "main.py" file.
 
 
 ## Project Results
-<summary><b>Traning - Validation Loss</b></summary>
+<summary><b>Traning/Validation Loss</b></summary>
 <p align="center">
   <img src="/2D_Classifier/Results/Training_Validation Loss.png" alt="Alt text">
 </p>
