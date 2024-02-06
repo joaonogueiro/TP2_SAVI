@@ -280,6 +280,7 @@ def main():
     # pcds_to_draw.extend(pcd_separate_objects)
     
     # Iterate through pcd_separate_objects, excluding the last object
+    a=0
     for idx in range(len(pcd_separate_objects) - 1):
         pcds_to_draw.append(pcd_separate_objects[idx])
 
@@ -312,10 +313,11 @@ def main():
         for idx, color in enumerate(object_colors):
             print(f"Color of object {idx + 1}: {color}")
         
-        #speaker
-        engine.say(f"OBJECT, {idx},Dimensions, length {round(length,2)}, width {round(width,2)}, height {round(height,2)}, Area{round(area,2)}, Volume{round(volume,2)} !")
+        #speaker               
+        
+        engine.say(f"object number, {a}, Found properties, length {round(length,2)}, width {round(width,2)}, height {round(height,2)}, Area{round(area,2)}, Volume{round(volume,2)}")
         engine.runAndWait()
-
+        a=a+1
 
         
     # saving the isolated objects ply
