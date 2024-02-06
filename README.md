@@ -83,15 +83,4 @@ And finally run the "main.py" file.
 |5% | Objetivo 8|Extras|
 |10%| Objetivo 9|Código e Github|
 
-<!-- | % | Objetivo | Tarefa |  
-| :---:         |     :---:      | :---:
-| 15%   | 94.6%     | 
-| 15%     | 95.5%       | 
-| 15%     | 94.9%       |
-| 10%    | 95.6%       |
-| 15%      | 79.8%       |
-| 5%      | 100.0%       |
-| 10%      | 100.0%      |
-| 5%      | 97.5%       | -->
-
    
