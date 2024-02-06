@@ -9,6 +9,7 @@ import numpy as np
 import sys
 from matplotlib import cm
 from more_itertools import locate
+import os
 
 # view = {
 # 	"class_name" : "ViewTrajectory",
@@ -93,6 +94,12 @@ def main():
     print('Loading file ' + filename)
     pcd_original = o3d.io.read_point_cloud(filename)
     print(pcd_original)
+
+    #
+    # Convert ply to pcd
+    #    
+    os.system('pcl_ply2pcd ' +filename+ ' pcd_point_cloud.pcd')
+    pcd_original_pcd = o3d.io.read_point_cloud('pcd_point_cloud.pcd')
 
     # --------------------------------------
     # Execution
@@ -219,7 +226,7 @@ def main():
     #pcds_to_draw = [pcd_point_cloud_2,pcd_inlier_cloud_2]
     #pcds_to_draw = [pcd_inlier_cloud_2,pcd_sep_objects_2[0],pcd_sep_objects_2[1],pcd_sep_objects_2[2],pcd_sep_objects_2[3]]
     #pcds_to_draw= [pcd_point_cloud]
-    pcds_to_draw= [pcd_downsampled,pcd_inlier_cloud_2]
+    pcds_to_draw= [pcd_original_pcd,pcd_inlier_cloud_2]
     
     
 
