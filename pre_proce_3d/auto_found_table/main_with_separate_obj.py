@@ -293,14 +293,23 @@ def main():
     # pcd_cropped.paint_uniform_color([0.0, 0.9, 0.0])
     # pcd_table.paint_uniform_color([0.0, 0.0, 0.9])
 
+    # print tests
+    print('group_idxs = ', group_idxs)
+    print('pcd_separate_objects = ', pcd_separate_objects)
+
     
     # pcds_to_draw = [point_cloud_downsampled, pcd_cropped, pcd_table]
     # pcds_to_draw = [pcd_cropped]
     # pcds_to_draw = [pcd_table]
     # pcds_to_draw = [pcd_table_original_colors]
     # pcds_to_draw = [pcd_cap_downsampled]
-    pcds_to_draw = [pcd_separate_objects[0], pcd_separate_objects[1], pcd_separate_objects[2],pcd_separate_objects[3], pcd_separate_objects[4]]
+    # pcds_to_draw = [pcd_separate_objects[0], pcd_separate_objects[1], pcd_separate_objects[2],pcd_separate_objects[3], pcd_separate_objects[4]]
     # pcds_to_draw.extend(pcd_separate_objects)
+    pcds_to_draw = []
+    # pcds_to_draw.extend(pcd_separate_objects)
+    # Iterate through pcd_separate_objects, excluding the last object
+    for idx in range(len(pcd_separate_objects) - 1):
+        pcds_to_draw.append(pcd_separate_objects[idx])
 
     frame_world = o3d.geometry.TriangleMesh().create_coordinate_frame(size=0.5, origin=np.array([0., 0., 0.]))
     
