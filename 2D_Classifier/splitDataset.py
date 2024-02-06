@@ -61,10 +61,11 @@ def main():
     # print(f'For test we have {len(test_folders)}\n{test_folders}\n')
 
     # Better split manualy, because are only 6 objects for test (Ensuring they are all tested)
-    test_folders = ['bowl_6', 'cap_2', 'cereal_box_5', 'coffee_mug_7', 'coffee_mug_8', 'soda_can_6']
+    test_folders = ['bowl_5', 'cap_2', 'cereal_box_5', 'coffee_mug_7', 'soda_can_3', 'soda_can_1']
     train_folders = [folder for folder in selected_folders if folder not in test_folders]
 
     train_filenames = [filename for filename in image_path if any(f'/{obj}/' in filename for obj in train_folders)]
+    train_filenames, validation_filenames = train_test_split(train_filenames, test_size=0.2) #################################
     test_filenames = [filename for filename in image_path if any(f'/{obj}/' in filename for obj in test_folders)]
 
     classes = {labels_list: i for i, labels_list in enumerate(categories_scenes)}
@@ -72,8 +73,12 @@ def main():
     with open("categories.json", "w") as outfile:
         outfile.write(json_categories)
     
-    d = {'train_filenames': random.sample(train_filenames, len(train_filenames)),
+    # d = {'train_filenames': random.sample(train_filenames, len(train_filenames)),
+        #  'test_filenames': random.sample(test_filenames, len(test_filenames))}
+    d = {'train_filenames': train_filenames,
+         'validation_filenames': validation_filenames,
          'test_filenames': random.sample(test_filenames, len(test_filenames))}
+
 
     json_object = json.dumps(d, indent=2)
 
@@ -83,6 +88,7 @@ def main():
 
     print('We have a total of ' + str(len(image_path)) + ' images')
     print(f'Used {len(train_filenames)} train images')
+    print(f'Used {len(validation_filenames)} validation images')
     print(f'Used {len(test_filenames)} test images')
     print('Categories names saved')
 

@@ -25,7 +25,7 @@ def main():
 
     test_filenames = dataset_filenames['test_filenames']
     print(f'Test {len(test_filenames)} images')
-    test_filenames = test_filenames[0:2000]
+    test_filenames = test_filenames[0:2200]
     # test_filenames = random.sample(test_filenames, 2000)
     print('Used ' + str(len(test_filenames)) + ' for testing ')
 
@@ -68,13 +68,15 @@ def main():
 
         labels_gt_np = labels_gt.cpu().detach().numpy()
 
-    # Accuracy = metrics.accuracy_score(labels_gt_np, predicted_is)
+    # print(labels_gt_np)
+    # print(predicted_is)
+        
     Precision = metrics.precision_score(labels_gt_np, predicted_is, average='weighted')
     Sensitivity_recall = metrics.recall_score(labels_gt_np, predicted_is, average='weighted')
     F1_score = metrics.f1_score(labels_gt_np, predicted_is, average='weighted')
-    print(f'Precision = {Precision}') # In the simplest terms, Precision is the ratio between the True Positives and all the points that are classified as Positives.
-    print(f'Recall = {Sensitivity_recall}') # To put it simply, Recall is the measure of our model correctly identifying True Positives. It is also called a True positive rate.
-    print(f'F1_score = {F1_score}') # F1-score is the Harmonic mean of the Precision and Recall
+    print(f'Precision = {Precision:.2f}') # In the simplest terms, Precision is the ratio between the True Positives and all the points that are classified as Positives.
+    print(f'Recall = {Sensitivity_recall:.2f}') # To put it simply, Recall is the measure of our model correctly identifying True Positives. It is also called a True positive rate.
+    print(f'F1_score = {F1_score:.2f}') # F1-score is the Harmonic mean of the Precision and Recall
 
     confusion_matrix = metrics.confusion_matrix(labels_gt_np, predicted_is)
 
@@ -83,10 +85,11 @@ def main():
 
     # Criar ConfusionMatrixDisplay com a matriz normalizada
     categories = ['bowl', 'cap', 'cereal_box', 'coffee_mug', 'soda_can'] 
+
     cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix=normalized_confusion_matrix, display_labels=categories)
 
     # Exibir a matriz de confusão
-    cm_display.plot(cmap='viridis', values_format='.2f')  # Não é necessário 'normalize' aqui
+    cm_display.plot(cmap='viridis', values_format='.2f')
 
     plt.show()
 

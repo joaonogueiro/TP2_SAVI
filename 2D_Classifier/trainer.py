@@ -12,13 +12,15 @@ from colorama import Fore, Style
 
 class Trainer():
 
-    # def __init__(self, model, train_loader, validation_loader, learning_rate, num_epochs, model_path, load_model):
-    def __init__(self, model, train_loader, learning_rate, num_epochs, model_path, load_model):
+    def __init__(self, model, train_loader, validation_loader, learning_rate, num_epochs, model_path, load_model):
+    # def __init__(self, model, train_loader, learning_rate, num_epochs, model_path, load_model):
 
         self.model = model
         self.train_loader = train_loader
+        #
         # self.loss_threshold = loss_threshold
-        # self.validation_loader = validation_loader
+        self.validation_loader = validation_loader
+        #
         self.num_epoch = num_epochs
 
         self.loss = nn.CrossEntropyLoss()
@@ -30,8 +32,9 @@ class Trainer():
         print(Fore.BLUE + f'Using {self.device}' + Style.RESET_ALL) 
 
         # Setup matplotlib figure
-        plt.title('Train Loss', fontweight="bold")
-        plt.axis([0, self.num_epoch, 0, 0.7])
+        plt.title('Training/Validation Loss', fontweight="bold")
+        plt.legend
+        plt.axis([0, self.num_epoch, 0, 0.3])
         plt.xlabel('Epoch')
         plt.ylabel('Loss')
         # plt.hlines(y=self.loss_threshold, xmin=0, xmax=self.num_epoch, colors='red', linestyles='-', lw=2, label='Threshold Loss')
@@ -45,20 +48,24 @@ class Trainer():
             self.load_model = False
 
 
-    # def draw(self, epoch_train_losses, epoch_validation_losses):
-    def draw(self, epoch_train_losses):
+    def draw(self, epoch_train_losses, epoch_validation_losses):
+    # def draw(self, epoch_train_losses):
         xs = range(0, len(epoch_train_losses))
         ys = epoch_train_losses
-        # ys_validation = epoch_validation_losses
+        #
+        ys_validation = epoch_validation_losses
 
         if self.handle is None:  # draw first time
-            self.handle = plt.plot(xs, ys, '-b')
-            # self.handle_validation = plt.plot(xs, ys_validation, '-r')
+            self.handle = plt.plot(xs, ys, '-b', label='Training')
+            #
+            self.handle_validation = plt.plot(xs, ys_validation, '-r', label='Validation')
         else:  # edit plot all other times
             plt.setp(self.handle, xdata=xs, ydata=ys)
-            # plt.setp(self.handle_validation, xdata=xs, ydata=ys_validation)
+            #
+            plt.setp(self.handle_validation, xdata=xs, ydata=ys_validation)
 
         # Draw figure
+        plt.legend()
         plt.draw()
         pressed_key = plt.waitforbuttonpress(0.1)
         if pressed_key == True:
@@ -83,12 +90,14 @@ class Trainer():
 
             start_epoch = checkpoint['epoch_idx']
             epoch_train_losses = checkpoint['epoch_train_losses']
-            # epoch_validation_losses = checkpoint['epoch_validation_losses']
+            #
+            epoch_validation_losses = checkpoint['epoch_validation_losses']
 
         else:
             start_epoch = 0
             epoch_train_losses = []
-            # epoch_validation_losses = []
+            #
+            epoch_validation_losses = []
 
         self.model.to(self.device)
 
@@ -124,35 +133,36 @@ class Trainer():
             epoch_train_loss = mean(batch_losses)
             epoch_train_losses.append(epoch_train_loss)
 
-            # # -----------------------------------------------------------------
-            # # Validation
-            # # -----------------------------------------------------------------
-            # self.model.eval()
-            # batch_losses = []
-            # for batch_idx, (inputs, labels_gt) in tqdm(enumerate(self.validation_loader),
-            #                                            total=len(self.validation_loader),
-            #                                            desc= f'Validating batches for epoch idx {epoch_idx} '):
-            #     # move tensors to device
-            #     inputs = inputs.to(self.device)
-            #     labels_gt = labels_gt.to(self.device)
+            #
+            # -----------------------------------------------------------------
+            # Validation
+            # -----------------------------------------------------------------
+            self.model.eval()
+            batch_losses = []
+            for batch_idx, (inputs, labels_gt) in tqdm(enumerate(self.validation_loader),
+                                                       total=len(self.validation_loader),
+                                                       desc= f'Validating batches for epoch idx {epoch_idx} '):
+                # move tensors to device
+                inputs = inputs.to(self.device)
+                labels_gt = labels_gt.to(self.device)
                                 
-            #     # Get predicted labels
-            #     labels_predicted = self.model.forward(inputs)
+                # Get predicted labels
+                labels_predicted = self.model.forward(inputs)
 
-            #     # Compute loss comparing labels_predicted labels
-            #     batch_loss = self.loss(labels_predicted, labels_gt)            
+                # Compute loss comparing labels_predicted labels
+                batch_loss = self.loss(labels_predicted, labels_gt)            
       
-            #     # Update Model
-            #     # NOTE: During validation we do not update the model
+                # Update Model
+                # NOTE: During validation we do not update the model
 
-            #     # Store batch loss
-            #     # TODO should we not normalize the batch_loss by the number of images in the batch?
-            #     # Será preciso?? Penso que só seja vantajoso por causa da última época...
-            #     batch_losses.append(batch_loss.data.item())
+                # Store batch loss
+                # TODO should we not normalize the batch_loss by the number of images in the batch?
+                # Será preciso?? Penso que só seja vantajoso por causa da última época...
+                batch_losses.append(batch_loss.data.item())
         
-            # # Compute epoch train loss
-            # epoch_validation_loss = mean(batch_losses)
-            # epoch_validation_losses.append(epoch_validation_loss)
+            # Compute epoch train loss
+            epoch_validation_loss = mean(batch_losses)
+            epoch_validation_losses.append(epoch_validation_loss)
          
 
             print('Finished training epoch ' + str(epoch_idx))
@@ -161,38 +171,38 @@ class Trainer():
 
             # TODO Save to disk. Decide when we should save?
             # Decidir quando se deve gravar a rede (analise do grafico Loss-Epoch)
-            # self.saveModel(model=self.model,
-            #                optimizer=self.optimizer,
-            #                epoch_idx=epoch_idx,
-            #                epoch_train_losses=epoch_train_losses,
-            #                epoch_validation_losses=epoch_validation_losses)
-
             self.saveModel(model=self.model,
                            optimizer=self.optimizer,
                            epoch_idx=epoch_idx,
-                           epoch_train_losses=epoch_train_losses)
+                           epoch_train_losses=epoch_train_losses,
+                           epoch_validation_losses=epoch_validation_losses)
+
+            # self.saveModel(model=self.model,
+            #                optimizer=self.optimizer,
+            #                epoch_idx=epoch_idx,
+            #                epoch_train_losses=epoch_train_losses)
 
 
-            # self.draw(epoch_train_losses, epoch_validation_losses)
+            self.draw(epoch_train_losses, epoch_validation_losses)
 
-            self.draw(epoch_train_losses)
+            # self.draw(epoch_train_losses)
 
-    # def saveModel(self, model, optimizer, epoch_idx, epoch_train_losses, epoch_validation_losses):
-    def saveModel(self, model, optimizer, epoch_idx, epoch_train_losses):
+    def saveModel(self, model, optimizer, epoch_idx, epoch_train_losses, epoch_validation_losses):
+    # def saveModel(self, model, optimizer, epoch_idx, epoch_train_losses):
 
 
         print('Saving model to ' + self.model_path + ' ... ', end='')
         # Build a dictionary to save
-        # d = {'epoch_idx': epoch_idx,
-        #      'model_state_dict': self.model.state_dict(),
-        #      'optimizer_state_dict': self.optimizer.state_dict(),
-        #      'epoch_train_losses': epoch_train_losses,
-        #      'epoch_validation_losses': epoch_validation_losses}
-        
         d = {'epoch_idx': epoch_idx,
              'model_state_dict': self.model.state_dict(),
              'optimizer_state_dict': self.optimizer.state_dict(),
-             'epoch_train_losses': epoch_train_losses}
+             'epoch_train_losses': epoch_train_losses,
+             'epoch_validation_losses': epoch_validation_losses}
+        
+        # d = {'epoch_idx': epoch_idx,
+        #      'model_state_dict': self.model.state_dict(),
+        #      'optimizer_state_dict': self.optimizer.state_dict(),
+        #      'epoch_train_losses': epoch_train_losses}
 
         torch.save(d, self.model_path)
 
