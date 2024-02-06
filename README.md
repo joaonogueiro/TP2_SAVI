@@ -35,7 +35,7 @@ SAVI - 2023/2024 Universidade de Aveiro
 - `pip install open3d`
 - `pip install gtts`
 - `pip install pcl_viewer`
-- `pip install pyttsx3`
+- `sudo apt install libespeak-dev`
 <br>
 
 ## User's Guide
@@ -50,7 +50,7 @@ git clone https://github.com/joaonogueiro/TP2_SAVI.git
 After cloning the repository, run the 3D pre-processing script to get the object's point clouds. 
 For that, you have to change the directory to:
 ```bash
-cd TP2_SAVI/pre_proce_3d/auto_found_table/final_main.py
+cd TP2_SAVI/pre_proce_3d/auto_found_table/main_3dpreprocess.py
 ```
 
 Then, after getting the point clouds of certain objects, go to:
@@ -63,10 +63,31 @@ And finally run the "main.py" file.
 
 
 ## Project Results
- IMAGEM 1
- IMAGEM 2
- IMAGEM 3
- IMAGEM 4
+<summary><b>Training/Validation Loss</b></summary>
+
+<p align="center">
+  <img src="/2D_Classifier/Results/Traning_Validation Loss.png" alt="Alt text">
+</p>
+ 
+<summary><b>Confusion Matrix</b></summary>
+
+<p align="center">
+  <img src="/2D_Classifier/Results/Confusion Matrix.png" alt="Alt text">
+</p>
+
+<summary><b>Class Metrics</b></summary>
+
+<p align="center">
+  <img src="/2D_Classifier/Results/Metrics.png" alt="Alt text">
+</p>
+
+<summary><b>3D Pre-Processing</b></summary>
+This is the output of the 3D Pre-Processing process, also, in the terminal is shown the properties of each object, so that the
+user can evaluate this whole process.
+<p align="center">
+  <img src="/2D_Classifier/Results/isolated_objects_preprocess3d.jpeg" alt="Alt text">
+</p>
+
 
 
  
