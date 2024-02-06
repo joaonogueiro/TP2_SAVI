@@ -71,16 +71,27 @@ And finally run the "main.py" file.
  
 ## Project Evaluation Criteria
 
-  | Percentagem | Objetivo | Tarefa |
-| :---:         |     :---:      |
-| 15%   | Objetivo 1     |   Treino de um classificador       |     
-| 15%     | Objetivo 2       |   Pré-processamento 3D       |       
-| 15%     | Objetivo 3       |   Classificação objetos na cena       |
-| 10%    | Objetivo 4       |   Descrição audio       |
-| 15%      | Objetivo 5       |   Métricas de performance       | 
-| 5%      | Objetivo 6       |   Sistema em tempo real       |
-| 10%      | Objetivo 7       |   Aspeto geral do software       |
-| 5%      | Objetivo 8       |   Extras       |
-| 10%      | Objetivo 9       |   Código e Github       |  
+| % | Objetivo  |    Tarefa     |
+| :---: | :---: | :---:
+|15%| Objetivo 1|Treino de um classificador|
+|15%| Objetivo 2|Pré-processamento 3D|
+|15%| Objetivo 3|Classificação objetos na cena|
+|10%| Objetivo 4|Descrição audio|
+|15%| Objetivo 5|Métricas de performance|
+|5% | Objetivo 6|Sistema em tempo real|
+|10%| Objetivo 7|Aspeto geral do software|
+|5% | Objetivo 8|Extras|
+|10%| Objetivo 9|Código e Github|
+
+<!-- | % | Objetivo | Tarefa |  
+| :---:         |     :---:      | :---:
+| 15%   | 94.6%     | 
+| 15%     | 95.5%       | 
+| 15%     | 94.9%       |
+| 10%    | 95.6%       |
+| 15%      | 79.8%       |
+| 5%      | 100.0%       |
+| 10%      | 100.0%      |
+| 5%      | 97.5%       | -->
 
    
