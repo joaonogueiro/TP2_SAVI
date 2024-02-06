@@ -64,21 +64,25 @@ And finally run the "main.py" file.
 
 ## Project Results
 <summary><b>Training/Validation Loss</b></summary>
+
 <p align="center">
   <img src="/2D_Classifier/Results/Traning_Validation Loss.png" alt="Alt text">
 </p>
  
 <summary><b>Confusion Matrix</b></summary>
+
 <p align="center">
   <img src="/2D_Classifier/Results/Confusion Matrix.png" alt="Alt text">
 </p>
 
 <summary><b>Class Metrics</b></summary>
+
 <p align="center">
   <img src="/2D_Classifier/Results/Metrics.png" alt="Alt text">
 </p>
 
 <summary><b>3D Pre-Processing</b></summary>
+
 <p align="center">
   <img src="/2D_Classifier/Results/isolated_objects_preprocess3d.jpeg" alt="Alt text">
 </p>
